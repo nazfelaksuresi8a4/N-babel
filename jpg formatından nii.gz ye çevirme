@@ -1,0 +1,13 @@
+#
+
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+import nibabel
+
+image_path = r"C:\Users\alper\Desktop\testing_zone\MRI_of_Human_Brain.jpg"
+
+image_obj = cv2.imread(image_path)
+
+nift_img = nibabel.nifti1.Nifti1Image(image_obj,affine=np.eye(4))
+nibabel.save(nift_img,'mrı_image.nii.gz')
