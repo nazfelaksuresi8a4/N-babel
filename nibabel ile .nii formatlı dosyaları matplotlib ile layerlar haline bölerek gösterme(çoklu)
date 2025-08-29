@@ -1,0 +1,40 @@
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+import nibabel
+#"C:\Users\alper\Desktop\testing_zone\MRI_of_Human_Brain.jpg"
+
+plt.style.use('dark_background')
+
+file_path_t1 = r"1-Flair.nii"
+file_path_t2 = r"2-T1.nii"
+
+t1_obj = nibabel.load(file_path_t1)
+t2_obj = nibabel.load(file_path_t2)
+
+fdata_t1 = t1_obj.get_fdata()
+fdata_t2 = t2_obj.get_fdata()
+
+height_t1,width_t1,depth_t1 = fdata_t1.shape
+height_t2,width_t2,depth_t2 = fdata_t2.shape
+
+fig,ax = plt.subplots(ncols=2,nrows=1)
+
+f_depth_t1 = depth_t1
+f_depth_t2 = depth_t2
+
+f_depth_t1_f = depth_t1
+f_depth_t2_f = depth_t2
+
+for t in range(max(f_depth_t1,f_depth_t2)):
+    if f_depth_t1_f != 0:
+        f_depth_t1_f -= 1
+    if f_depth_t2_f != 0:
+        f_depth_t2_f -= 1
+        
+    ax[0].imshow(fdata_t1[:,:,f_depth_t1_f],cmap='gray')
+    ax[1].imshow(fdata_t2[:,:,f_depth_t2_f],cmap='gray')
+
+    plt.pause(0.5)
+
+plt.show()
