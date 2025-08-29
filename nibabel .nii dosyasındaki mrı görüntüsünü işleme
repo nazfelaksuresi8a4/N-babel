@@ -1,0 +1,21 @@
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+import nibabel
+#"C:\Users\alper\Desktop\testing_zone\MRI_of_Human_Brain.jpg"
+
+plt.style.use('dark_background')
+
+file_path = r"1-Flair.nii"
+mrı_obj = nibabel.load(file_path)
+
+data = mrı_obj.get_fdata()
+
+height,width,depth = data.shape
+plt.title('Manyetik rezorans(MRI) Beyin görüntüsü')
+
+for f in range(depth):
+    plt.imshow(data[:,:,f],cmap='gray')
+    plt.pause(0.5)
+
+plt.show()
