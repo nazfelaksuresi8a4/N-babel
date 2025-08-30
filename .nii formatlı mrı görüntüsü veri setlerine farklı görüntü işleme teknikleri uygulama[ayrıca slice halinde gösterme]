@@ -28,7 +28,7 @@ ax[0,1].set_title('Orginal image')
 slice_index = [depth_t1].copy()
 
 for i in range(depth_t1):
-    if slice_index == 0:
+    if slice_index[0} == 0:
         slice_index[0] = depth_t1
         break
 
