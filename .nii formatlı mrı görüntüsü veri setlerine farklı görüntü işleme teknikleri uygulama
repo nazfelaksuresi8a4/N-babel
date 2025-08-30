@@ -1,0 +1,37 @@
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+import nibabel
+from skimage import filters as filters
+
+#"C:\Users\alper\Desktop\testing_zone\MRI_of_Human_Brain.jpg"
+
+plt.style.use('dark_background')
+
+file_path_t1 = r"1-Flair.nii"
+#file_path_t2 = r"2-T1.nii"
+
+t1_obj = nibabel.load(file_path_t1)
+
+fdata_t1 = t1_obj.get_fdata()
+
+fdata_t1_copy = [fdata_t1].copy()
+height_t1,width_t1,depth_t1 = fdata_t1.shape
+
+thresold,data = cv2.threshold(fdata_t1_copy[0][:,:,depth_t1 - 1],230,255,cv2.THRESH_BINARY)
+sobed_image = filters.sobel(data)
+
+orginal_sobed_image = filters.sobel(fdata_t1[:,:,depth_t1 - 1])
+
+fig,ax = plt.subplots(ncols=2,nrows=2)
+
+ax[0,0].imshow(data ,cmap='gray')
+ax[1,0].imshow(sobed_image ,cmap='gray')
+ax[1,1].imshow(orginal_sobed_image ,cmap='gray')
+ax[0,1].imshow(fdata_t1[:,:,depth_t1 - 1] ,cmap='gray')
+
+ax[0,0].set_title('Orginal thresolding')
+ax[1,0].set_title('Thresolding and sobel filter')
+ax[1,1].set_title('Orginal sobel filter')
+ax[0,1].set_title('Orginal image')
+plt.show()
