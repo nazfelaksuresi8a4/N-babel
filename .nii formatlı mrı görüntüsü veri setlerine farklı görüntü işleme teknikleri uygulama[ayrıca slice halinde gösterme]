@@ -8,8 +8,8 @@ from skimage import filters as filters
 
 plt.style.use('dark_background')
 
-file_path_t1 = r"1-Flair.nii"
-#file_path_t2 = r"2-T1.nii"
+file_path_t1 = r"60-T1.nii"
+mask_path_t1 = r'60-LesionSeg-T1.nii'
 
 t1_obj = nibabel.load(file_path_t1)
 
