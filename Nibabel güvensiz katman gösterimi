@@ -1,0 +1,18 @@
+import nibabel as nib
+import numpy as np
+import matplotlib.pyplot as plt
+
+file =  r"C:\Users\Public\Downloads\zstat1.nii.gz"
+
+file_obj = nib.load(file)
+
+f_data = file_obj.get_fdata()
+
+h,w,d = file_obj.shape
+
+for i in range(d):
+    plt.imshow(f_data[:,:,i],cmap='gray')
+    plt.pause(0.5)
+
+plt.show()
+
