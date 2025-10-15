@@ -1,0 +1,16 @@
+import nibabel as nib
+import numpy as np
+import matplotlib.pyplot as plt
+
+file =  r"C:\Users\Public\Downloads\zstat1.nii.gz"
+
+file_obj = nib.load(file)
+
+f_data = file_obj.get_fdata()
+
+fft = np.fft.fft2(f_data[:,:,0])
+
+plt.imshow(np.abs(fft))
+plt.show()
+
+#not: np.fft.fft2 gibi fonksiyonlar fourier transform sonrası matrixi kompleks(complex) veriye çevirir bu kompleks veriler np.abs(x) ile normalize edilip tekrardan kompleks olmayan hale getirilebilir np.abs(x) matrixin / arrayın içindeki absoulte-value(mutlak değer)'i alır
