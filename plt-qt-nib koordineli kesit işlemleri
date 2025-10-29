@@ -1,0 +1,92 @@
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import*
+from PyQt5.QtGui import*
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.pyplot as plt
+import sys as _s
+import nibabel as nib
+
+class MainUİ(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout()
+        widget = QWidget()
+        widget.setLayout(layout)
+
+        self.current_data = None
+
+        self.fig,self.ax = plt.subplots(nrows=1,ncols=1,figsize=(5,4),dpi=100)
+        self.FigureCanvasQT = FigureCanvas(figure=self.fig)
+        
+        self.line_edit = QLineEdit()
+        self.button = QPushButton('Tanımla')
+        self.slider = QSlider(Qt.Horizontal)
+        self.lcd_numberboard = QLCDNumber()
+
+        layout.addWidget(self.lcd_numberboard)
+        layout.addWidget(self.slider)
+        layout.addWidget(self.FigureCanvasQT)
+        layout.addWidget(self.line_edit)
+        layout.addWidget(self.button)
+
+        self.lcd_numberboard.setStyleSheet('color:white;background-color:black')
+        
+        self.line_edit.setAlignment(Qt.AlignCenter)
+
+        self.button.clicked.connect(self.define_mri_data)
+        self.slider.valueChanged.connect(self.change_slice)
+
+        self.ax.axis(False)
+        self.ax.grid(True)
+
+        self.setCentralWidget(widget)
+
+    def define_mri_data(self):
+        data_path = str(self.line_edit.text())
+        
+        data_object = nib.load(data_path)
+        data_object_shape = data_object.shape
+
+        h1,w1,d1 = None,None,None
+
+        if len(data_object_shape) == 3:
+            h1,w1,d1 = data_object_shape
+
+        else:
+            h1,w1,d1 = None,None,None
+            QMessageBox.critical(self,'Lütfen 3D Bir görüntü seçiniz!!','Bu program sadece 3D Mrı dosyalarını destekler!!')
+
+        if h1 and w1 and d1:
+            metadata = data_object.get_fdata()
+            
+            dat,h,w,d = metadata,h1,w1,d1
+
+            ready_data = metadata[:,:,d1 - 1]
+            self.current_data = metadata
+
+            self.slider.setRange(0,d1 - 1)
+
+            self.ax.imshow(ready_data,cmap='gray')
+            self.FigureCanvasQT.draw()
+        
+        else:
+            print(data_object_shape)
+    
+    def change_slice(self):
+        slice = self.slider.value()
+        
+        try:
+            self.ax.clear()
+            self.ax.imshow(self.current_data[:,:,slice],cmap='gray')
+            self.FigureCanvasQT.draw()
+
+            self.lcd_numberboard.display(str(slice))
+        
+        except:
+            QMessageBox.information(self,'Bilgi','Bir sorun oluştu!')
+
+if __name__=="__main__":
+    sp = QApplication(_s.argv)
+    sw = MainUİ()
+    sw.show()
+    _s.exit(sp.exec_())
